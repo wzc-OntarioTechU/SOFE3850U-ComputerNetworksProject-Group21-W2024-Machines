@@ -13,7 +13,7 @@
 #define SERVER_TCP_PORT 3000	/* well-known port */
 #define BUFLEN		256	/* buffer length */
 
-int echod(int);
+int send_message(int);
 void reaper(int);
 
 int main(int argc, char **argv)
@@ -22,15 +22,15 @@ int main(int argc, char **argv)
 	struct	sockaddr_in server, client;
 
 	switch(argc){
-	case 1:
-		port = SERVER_TCP_PORT;
-		break;
-	case 2:
-		port = atoi(argv[1]);
-		break;
-	default:
-		fprintf(stderr, "Usage: %s [port]\n", argv[0]);
-		exit(1);
+		case 1:
+			port = SERVER_TCP_PORT;
+			break;
+		case 2:
+			port = atoi(argv[1]);
+			break;
+		default:
+			fprintf(stderr, "Usage: %s [port]\n", argv[0]);
+			exit(1);
 	}
 
 	/* Create a stream socket	*/	
@@ -49,46 +49,31 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
-	/* queue up to 5 connect requests  */
-	listen(sd, 5);
+	/* queue up to 1 connect requests  */
+	listen(sd, 1);
 
-	(void) signal(SIGCHLD, reaper);
-
-	while(1) {
-	  client_len = sizeof(client);
-	  new_sd = accept(sd, (struct sockaddr *)&client, &client_len);
-	  if(new_sd < 0){
-	    fprintf(stderr, "Can't accept client \n");
-	    exit(1);
-	  }
-	  switch (fork()){
-	  case 0:		/* child */
+	while(1){
+		client_len = sizeof(client);
+		new_sd = accept(sd, (struct sockaddr *)&client, &client_len);
+		if(new_sd < 0){
+			fprintf(stderr, "Can't accept client \n");
+			exit(1);
+		}
+		
 		(void) close(sd);
-		exit(send_message(new_sd));
-	  default:		/* parent */
+		send_message(new_sd);
 		(void) close(new_sd);
 		break;
-	  case -1:
-		fprintf(stderr, "fork: error\n");
-	  }
 	}
+
 }
 
 /*	A program to send a message to client 	*/
 int send_message(int sd)
 {
-	char    *bp, buf[BUFLEN];
+	char buf[] = "hello\n";
 	int     n, bytes_to_read;
-	buf = "hello";
-	write(bp, buf, BUFLEN);
+	write(sd, buf, sizeof buf);
 	close(sd);
-
 	return(0);
-}
-
-/*	reaper		*/
-void	reaper(int sig)
-{
-	int	status;
-	while(wait3(&status, WNOHANG, (struct rusage *)0) >= 0);
 }

@@ -6,7 +6,7 @@
 ** Use VBoxManage or the VirtualBox Manager GUI to make changes.
 -->
 <VirtualBox xmlns="http://www.virtualbox.org/" version="1.19-windows">
-  <Machine uuid="{fc0f8a04-39bb-49e7-9494-1954063a4d1c}" name="server1" OSType="Ubuntu_64" snapshotFolder="Snapshots" lastStateChange="2024-03-11T22:00:43Z">
+  <Machine uuid="{fc0f8a04-39bb-49e7-9494-1954063a4d1c}" name="server1" OSType="Ubuntu_64" snapshotFolder="Snapshots" lastStateChange="2024-03-23T02:46:06Z">
     <MediaRegistry>
       <HardDisks>
         <HardDisk uuid="{0f908b7d-b15a-47c0-8da8-fd564696890f}" location="server1.vdi" format="VDI" type="Normal"/>
@@ -16,10 +16,14 @@
       </DVDImages>
     </MediaRegistry>
     <ExtraData>
-      <ExtraDataItem name="GUI/LastNormalWindowPosition" value="328,141,1280,840"/>
+      <ExtraDataItem name="GUI/AutoresizeGuest" value="false"/>
+      <ExtraDataItem name="GUI/LastCloseAction" value="PowerOff"/>
+      <ExtraDataItem name="GUI/LastNormalWindowPosition" value="0,29,1920,991,max"/>
+      <ExtraDataItem name="GUI/LastScaleWindowPosition" value="690,38,1226,981"/>
+      <ExtraDataItem name="GUI/ScaleFactor" value="1"/>
     </ExtraData>
     <Hardware>
-      <CPU>
+      <CPU count="2">
         <PAE enabled="false"/>
         <LongMode enabled="true"/>
         <X2APIC enabled="true"/>
@@ -40,14 +44,24 @@
       </USB>
       <Network>
         <Adapter slot="0" enabled="true" MACAddress="0800273EFF7C" type="82540EM">
-          <NAT/>
+          <DisabledModes>
+            <NAT localhost-reachable="true"/>
+            <BridgedInterface name="Realtek PCIe GbE Family Controller"/>
+            <InternalNetwork name="intnet"/>
+            <HostOnlyInterface name="VirtualBox Host-Only Ethernet Adapter"/>
+          </DisabledModes>
+          <NATNetwork name="NatNetwork"/>
         </Adapter>
       </Network>
       <AudioAdapter codec="AD1980" useDefault="true" driver="WAS" enabled="true" enabledOut="true"/>
       <RTC localOrUTC="UTC"/>
-      <Clipboard/>
+      <Clipboard mode="Bidirectional"/>
       <GuestProperties>
-        <GuestProperty name="/VirtualBox/HostInfo/GUI/LanguageID" value="en_US" timestamp="1710194418814960000" flags="RDONLYGUEST"/>
+        <GuestProperty name="/VirtualBox/HostInfo/GUI/LanguageID" value="en_US" timestamp="1711163141301227600" flags="RDONLYGUEST"/>
+        <GuestProperty name="/VirtualBox/HostInfo/VBoxRev" value="154605" timestamp="1711161966078517902" flags="TRANSIENT, RDONLYGUEST"/>
+        <GuestProperty name="/VirtualBox/HostInfo/VBoxVer" value="7.0.4" timestamp="1711161966078517900" flags="TRANSIENT, RDONLYGUEST"/>
+        <GuestProperty name="/VirtualBox/HostInfo/VBoxVerExt" value="7.0.4" timestamp="1711161966078517901" flags="TRANSIENT, RDONLYGUEST"/>
+        <GuestProperty name="/VirtualBox/VMInfo/ResumeCounter" value="5" timestamp="1711161322574791200" flags="TRANSIENT, RDONLYGUEST"/>
       </GuestProperties>
       <StorageControllers>
         <StorageController name="IDE" type="PIIX4" PortCount="2" useHostIOCache="true" Bootable="true">

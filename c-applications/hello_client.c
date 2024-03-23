@@ -58,19 +58,14 @@ int main(int argc, char **argv)
 	  exit(1);
 	}
 
-	printf("Transmit: \n");
-	while(n=read(0, sbuf, BUFLEN)){	/* get user message */
-	  write(sd, sbuf, n);		/* send it out */
-	  printf("Receive: \n");
-	  bp = rbuf;
-	  bytes_to_read = n;
-	  while ((i = read(sd, bp, bytes_to_read)) > 0){
+	/* Prepare for incoming message */
+	bp = rbuf;
+	bytes_to_read = n;
+	while ((i = read(sd, bp, bytes_to_read)) > 0){ /* Read Message */
 		bp += i;
 		bytes_to_read -=i;
-	  }
-	  write(1, rbuf, n);
-	  printf("Transmit: \n");
 	}
+	write(1, rbuf, n); /* Write Message */
 
 	close(sd);
 	return(0);

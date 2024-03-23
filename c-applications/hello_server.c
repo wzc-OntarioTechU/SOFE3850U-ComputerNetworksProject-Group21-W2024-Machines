@@ -64,7 +64,7 @@ int main(int argc, char **argv)
 	  switch (fork()){
 	  case 0:		/* child */
 		(void) close(sd);
-		exit(echod(new_sd));
+		exit(send_message(new_sd));
 	  default:		/* parent */
 		(void) close(new_sd);
 		break;
@@ -74,14 +74,13 @@ int main(int argc, char **argv)
 	}
 }
 
-/*	echod program	*/
-int echod(int sd)
+/*	A program to send a message to client 	*/
+int send_message(int sd)
 {
-	char	*bp, buf[BUFLEN];
-	int 	n, bytes_to_read;
-
-	while(n = read(sd, buf, BUFLEN)) 
-		write(sd, buf, n);
+	char    *bp, buf[BUFLEN];
+	int     n, bytes_to_read;
+	buf = "hello";
+	write(bp, buf, BUFLEN);
 	close(sd);
 
 	return(0);

@@ -59,14 +59,14 @@ int main(int argc, char **argv)
 	}
 
 	/* Prepare for incoming message */
+	n = 7; /* Known size of "Hello" */
 	bp = rbuf;
 	bytes_to_read = n;
 	while ((i = read(sd, bp, bytes_to_read)) > 0){ /* Read Message */
 		bp += i;
 		bytes_to_read -=i;
 	}
-	write(1, rbuf, n); /* Write Message */
-
+	write(1, rbuf, n); /* Write Message */	
 	close(sd);
 	return(0);
 }

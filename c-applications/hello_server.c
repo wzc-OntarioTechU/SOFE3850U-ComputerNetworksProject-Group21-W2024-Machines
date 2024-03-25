@@ -12,9 +12,7 @@
 
 #define SERVER_TCP_PORT 3000	/* well-known port */
 #define BUFLEN		256	/* buffer length */
-
-int send_message(int);
-void reaper(int);
+#define PACKET_SIZE	100 /* packet length */
 
 int main(int argc, char **argv)
 {

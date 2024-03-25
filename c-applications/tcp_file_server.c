@@ -82,7 +82,8 @@ void send_file(int sd){
 	/* search the server's directory */
 	if(fp == NULL){
 			/* if the system cannot find the file, writes "Error, file not found" to sd */
-			const char *error_message = "404, file not found on server";
+			/* Use the start of text character */
+			const char *error_message = "\x02";
        		write(sd, error_message, strlen(error_message) + 1);
 			return;
 	}
@@ -93,5 +94,5 @@ void send_file(int sd){
     }
 
 	fclose(fp);
-	fclose(sd);
+	close(sd);
 }

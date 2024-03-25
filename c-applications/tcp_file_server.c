@@ -8,11 +8,13 @@
 #include <sys/wait.h>
 #include <stdlib.h>
 #include <strings.h>
-
+#include <string.h>
 
 #define SERVER_TCP_PORT 3000	/* well-known port */
 #define BUFLEN		256	/* buffer length */
 #define PACKET_SIZE	100 /* packet length */
+
+void send_file(int);
 
 int main(int argc, char **argv)
 {
@@ -57,7 +59,7 @@ int main(int argc, char **argv)
 			fprintf(stderr, "Can't accept client \n");
 			exit(1);
 		}
-		
+
 		(void) close(sd);
 		send_file(new_sd);
 		(void) close(new_sd);
@@ -73,26 +75,29 @@ void send_file(int sd){
 	char pbuf[PACKET_SIZE];
 	int n;
 
-	/* read the filename from the client */
+	/* read the filename from the client */	
 	read(sd, fnbuf, BUFLEN);
-	printf("\nReceived request to open: ");
-	write(1, fnbuf, BUFLEN);
-	fp = fopen(fnbuf, "r");
+	printf("Received request to open: ");
+	write(1, fnbuf, strlen(fnbuf));
+	char *filePath = (char *)malloc(strlen(fnbuf)+1); 
 
+	printf("After\n");
 	/* search the server's directory */
-	if(fp == NULL){
-			/* if the system cannot find the file, writes "Error, file not found" to sd */
-			/* Use the start of text character */
-			const char *error_message = "\x02";
-       		write(sd, error_message, strlen(error_message) + 1);
-			return;
+	if((fp = fopen(filePath, "r")) == NULL){
+		printf("File is not found\n");
+		/* if the system cannot find the file, writes "Error, file not found" to sd */
+		/* Use the start of text character */
+		const char *error_message = "\x02";
+		write(sd, error_message, strlen(error_message) + 1);
+		return;
 	}
 
 	/* loops until all packets are sent */
-    while ((n = fread(pbuf, 1, PACKET_SIZE, fp)) > 0) {
-        write(sd, pbuf, n);
-    }
+	while ((n = fread(pbuf, 1, PACKET_SIZE, fp)) > 0) {
+		write(sd, pbuf, n);
+	}
 
 	fclose(fp);
 	close(sd);
+	free(filePath);
 }

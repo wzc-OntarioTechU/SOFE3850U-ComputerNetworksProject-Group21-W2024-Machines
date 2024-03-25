@@ -66,31 +66,12 @@ int main(int argc, char **argv)
 
 }
 
-/* Function to send the requested file */
-void send_file(int sd){
-	FILE *fp;
-	char fnbuf[BUFLEN];
-	char pbuf[PACKET_SIZE];
-	int n;
-
-	/* read the filename from the client */
-	read(sd, fnbuf, BUFLEN);
-	printf("\nReceived request to open: ");
-	write(1, fnbuf, BUFLEN);
-	fp = fopen(fnbuf, "r");
-
-	/* search the server's directory */
-	if(fp == NULL){
-			/* if the system cannot find the file, return -1 and writes "Error, file not found" to new_sd */
-			const char *error_message = "404, file not found on server";
-       		write(sd, error_message, strlen(error_message) + 1);
-			return;
-	}
-
-	/* loops until all packets are sent */
-    while ((n = fread(pbuf, 1, PACKET_SIZE, fp)) > 0) {
-        write(sd, pbuf, n);
-    }
-
-	fclose(fp);
+/*	A program to send a message to client 	*/
+int send_message(int sd)
+{
+	char buf[] = "hello\n";
+	int     n, bytes_to_read;
+	write(sd, buf, sizeof buf);
+	close(sd);
+	return(0);
 }

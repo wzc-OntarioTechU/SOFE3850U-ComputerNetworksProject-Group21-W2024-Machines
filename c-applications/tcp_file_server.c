@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <strings.h>
 #include <string.h>
+#include <sys/stat.h>
 
 #define SERVER_TCP_PORT 3000	/* well-known port */
 #define BUFLEN		256	/* buffer length */
@@ -71,33 +72,36 @@ int main(int argc, char **argv)
 /* Function to send the requested file */
 void send_file(int sd){
 	FILE *fp;
+	struct stat st;
 	char fnbuf[BUFLEN];
 	char pbuf[PACKET_SIZE];
 	int n;
 
 	/* read the filename from the client */	
+	printf(" was requested.");
 	read(sd, fnbuf, BUFLEN);
-	printf("Received request to open: ");
-	write(1, fnbuf, strlen(fnbuf));
-	char *filePath = (char *)malloc(strlen(fnbuf)+1); 
-
-	printf("After\n");
+	write(0, fnbuf, strlen(fnbuf));
+	
 	/* search the server's directory */
-	if((fp = fopen(filePath, "r")) == NULL){
-		printf("File is not found\n");
-		/* if the system cannot find the file, writes "Error, file not found" to sd */
-		/* Use the start of text character */
-		const char *error_message = "\x02";
+	if((fp = fopen(fnbuf, "r")) == NULL){
+		char error_message[] = "\02File is not found\n";
+		printf("\n%s", error_message);
+		write(sd, error_message, strlen(error_message) + 1);
+		return;
+	}
+	stat(fnbuf, &st);
+	if(st.st_size <= 100){
+		char error_message[] = "\02File is too small (<100 bytes)\n";
+		printf("\n%s", error_message);	
 		write(sd, error_message, strlen(error_message) + 1);
 		return;
 	}
 
+	printf("\nFile was found\n");
 	/* loops until all packets are sent */
 	while ((n = fread(pbuf, 1, PACKET_SIZE, fp)) > 0) {
 		write(sd, pbuf, n);
 	}
-
 	fclose(fp);
 	close(sd);
-	free(filePath);
 }
